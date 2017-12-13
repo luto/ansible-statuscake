@@ -31,11 +31,11 @@ author: "Raphael Pereira Ribeiro (@raphapr)"
 options:
   username:
     description:
-      - StatusCake account username.
+      - StatusCake account username. Can also be supplied via $STATUSCAKE_USERNAME env variable.
     required: true
   api_key:
     description:
-      - StatusCake API KEY.
+      - StatusCake API KEY. Can also be supplied via $STATUSCAKE_API_KEY env variable.
     required: true
   name:
     description:
@@ -370,8 +370,8 @@ class StatusCake:
 def run_module():
 
     module_args = dict(
-        username=dict(type='str', required=True),
-        api_key=dict(type='str', required=True),
+        username=dict(type='str', required=False),
+        api_key=dict(type='str', required=False),
         name=dict(type='str', required=False),
         url=dict(type='str', required=False),
         state = dict(choices=['absent', 'present', 'list'], default='present'),
@@ -402,8 +402,8 @@ def run_module():
             ]
             )
 
-    username = module.params['username']
-    api_key = module.params['api_key']
+    username = module.params['username'] or os.environ.get('STATUSCAKE_USERNAME')
+    api_key = module.params['api_key'] or os.environ.get('STATUSCAKE_API_KEY')
     name = module.params['name']
     url = module.params['url']
     state = module.params['state']
@@ -423,6 +423,11 @@ def run_module():
     find_string = module.params['find_string']
     do_not_find = module.params['do_not_find']
     post_raw = module.params['post_raw']
+
+    if not username:
+        return module.fail_json(msg="Please provide an username via the username argument or the STATUSCAKE_USERNAME environment variable")
+    if not api_key:
+        return module.fail_json(msg="Please provide an API key via the api_key argument or the STATUSCAKE_API_KEY environment variable")
 
     test = StatusCake(module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, paused, node_locations, confirmation, timeout, status_codes, host, custom_header, follow_redirect, enable_ssl, find_string, do_not_find, post_raw)
 
