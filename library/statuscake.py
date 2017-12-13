@@ -6,7 +6,7 @@ class StatusCake:
     URL_ALL_TESTS = "https://app.statuscake.com/API/Tests"
     URL_DETAILS_TEST = "https://app.statuscake.com/API/Tests/Details"
 
-    def __init__(self, module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, user_agent, paused, node_locations, confirmation, timeout, status_codes):
+    def __init__(self, module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, user_agent, paused, node_locations, confirmation, timeout, status_codes, find_string):
         self.headers = {"Username": username, "API": api_key}
         self.module = module
         self.name = name
@@ -21,6 +21,7 @@ class StatusCake:
         self.confirmation = confirmation
         self.timeout = timeout
         self.status_codes = status_codes
+        self.find_string = find_string
 
         if not check_rate:
             self.check_rate = 300
@@ -68,7 +69,9 @@ class StatusCake:
                 "NodeLocations": self.node_locations,
                 "Confirmation": self.confirmation,
                 "Timeout": self.timeout,
-                "StatusCodes": self.status_codes}
+                "StatusCodes": self.status_codes,
+                "FindString": self.find_string,
+        }
 
         test_id = self.check_test()
         
@@ -98,6 +101,7 @@ def run_module():
         confirmation=dict(type='int', required=False),
         timeout=dict(type='int', required=False),
         status_codes=dict(type='str', required=False),
+        find_string=dict(type='str', required=False),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
@@ -117,8 +121,9 @@ def run_module():
     confirmation = module.params['confirmation']
     timeout = module.params['timeout']
     status_codes = module.params['status_codes']
+    find_string = module.params['find_string']
 
-    test = StatusCake(module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, user_agent, paused, node_locations, confirmation, timeout, status_codes)
+    test = StatusCake(module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, user_agent, paused, node_locations, confirmation, timeout, status_codes, find_string)
 
     if state == "absent":
         test.delete_test()
