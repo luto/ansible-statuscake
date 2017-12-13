@@ -37,7 +37,7 @@ class StatusCake:
             self.module.exit_json(changed=False, meta= response['Message'])
         else:
             self.module.exit_json(changed=True, meta= response['Message'])
-            
+
     def check_test(self):
         response = requests.put(self.URL_ALL_TESTS, headers=self.headers)
         json_resp = response.json()
@@ -55,7 +55,7 @@ class StatusCake:
             data = {'TestID': test_id}
             response = requests.delete(self.URL_DETAILS_TEST, headers=self.headers,data=data)
             self.check_response(response.json())
-                    
+
     def create_test(self):
         data = {"WebsiteName": self.name,
                 "WebsiteURL": self.url,
@@ -71,9 +71,9 @@ class StatusCake:
                 "StatusCodes": self.status_codes}
 
         test_id = self.check_test()
-        
+
         if not test_id:
-            response = requests.put(self.URL_UPDATE_TEST, headers=self.headers, data=data)    
+            response = requests.put(self.URL_UPDATE_TEST, headers=self.headers, data=data)
             self.check_response(response.json())
         else:
             data['TestID'] = test_id
@@ -101,7 +101,7 @@ def run_module():
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
-    
+
     username = module.params['username']
     api_key = module.params['api_key']
     name = module.params['name']
@@ -128,5 +128,5 @@ def run_module():
 def main():
     run_module()
 
-if __name__ == '__main__':  
+if __name__ == '__main__':
     main()
