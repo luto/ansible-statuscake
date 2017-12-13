@@ -50,7 +50,7 @@ class StatusCake:
         test_id = self.check_test()
 
         if not test_id:
-            self.module.exit_json(changed=False, msg="This test doens't exists")
+            self.module.exit_json(changed=False, msg="This test doesn't exists")
         else:
             data = {'TestID': test_id}
             response = requests.delete(self.URL_DETAILS_TEST, headers=self.headers,data=data)
