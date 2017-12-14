@@ -6,7 +6,7 @@ class StatusCake:
     URL_ALL_TESTS = "https://app.statuscake.com/API/Tests"
     URL_DETAILS_TEST = "https://app.statuscake.com/API/Tests/Details"
 
-    def __init__(self, module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, user_agent, paused, node_locations, confirmation, timeout, status_codes, find_string):
+    def __init__(self, module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, user_agent, paused, node_locations, confirmation, timeout, status_codes, find_string, port):
         self.headers = {"Username": username, "API": api_key}
         self.module = module
         self.name = name
@@ -22,6 +22,7 @@ class StatusCake:
         self.timeout = timeout
         self.status_codes = status_codes
         self.find_string = find_string
+        self.port = port
 
         if not check_rate:
             self.check_rate = 300
@@ -71,6 +72,7 @@ class StatusCake:
                 "Timeout": self.timeout,
                 "StatusCodes": self.status_codes,
                 "FindString": self.find_string,
+                "Port": self.port,
         }
 
         test_id = self.check_test()
@@ -102,6 +104,7 @@ def run_module():
         timeout=dict(type='int', required=False),
         status_codes=dict(type='str', required=False),
         find_string=dict(type='str', required=False),
+        port=dict(type='int', required=False),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=False)
@@ -122,8 +125,9 @@ def run_module():
     timeout = module.params['timeout']
     status_codes = module.params['status_codes']
     find_string = module.params['find_string']
+    port = module.params['port']
 
-    test = StatusCake(module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, user_agent, paused, node_locations, confirmation, timeout, status_codes, find_string)
+    test = StatusCake(module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, user_agent, paused, node_locations, confirmation, timeout, status_codes, find_string, port)
 
     if state == "absent":
         test.delete_test()
