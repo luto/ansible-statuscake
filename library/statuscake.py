@@ -34,7 +34,16 @@ class StatusCake:
 
     def check_response(self,response):
         if response['Success'] == False:
-            self.module.exit_json(changed=False, meta= response['Message'])
+            errormsg = response['Message']
+
+            if errormsg.startswith('No data has been updated'):
+                self.module.exit_json(changed=False, meta= response['Message'])
+
+            if response.get('Issues'):
+                errormsg += ' '
+                errormsg += '; '.join("{0}: {1}".format(k, v) for k, v in response['Issues'].items())
+
+            self.module.fail_json(msg=errormsg)
         else:
             self.module.exit_json(changed=True, meta= response['Message'])
             
