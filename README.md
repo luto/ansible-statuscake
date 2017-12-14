@@ -30,6 +30,7 @@ Ansible 2.2+
 | timeout              | false    | Timeout in seconds                                                                            | 30             |
 | status_codes         | false    | Comma seperated list of StatusCodes to trigger error on                                       | Stantard codes |
 | find_string          | false    | A string to look for in the response; trigger when it is not there                            |                |
+| port                 | false    | Port to check for TCP tests                                                                   |                |
 
 ### Example usage:
 
