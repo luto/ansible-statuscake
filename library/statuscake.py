@@ -218,7 +218,7 @@ class StatusCake:
     URL_ALL_TESTS = "https://app.statuscake.com/API/Tests"
     URL_DETAILS_TEST = "https://app.statuscake.com/API/Tests/Details"
 
-    def __init__(self, module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, paused, node_locations, confirmation, timeout, status_codes, host, custom_header, follow_redirect, enable_ssl, find_string, do_not_find, post_raw):
+    def __init__(self, module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, paused, node_locations, confirmation, timeout, status_codes, host, custom_header, follow_redirect, enable_ssl, find_string, do_not_find, port, post_raw):
         self.headers = {"Username": username, "API": api_key}
         self.module = module
         self.name = name
@@ -238,6 +238,7 @@ class StatusCake:
         self.enable_ssl = enable_ssl
         self.find_string = find_string
         self.do_not_find = do_not_find
+        self.port = port
         self.post_raw = post_raw
 
         if not check_rate:
@@ -266,6 +267,7 @@ class StatusCake:
                 "EnableSSLWarning": self.enable_ssl,
                 "FindString": self.find_string,
                 "DoNotFind": self.do_not_find,
+                "Port": self.port,
                 }
 
         if self.custom_header:
@@ -390,6 +392,7 @@ def run_module():
         enable_ssl=dict(type='int', required=False),
         find_string=dict(type='str', required=False),
         do_not_find=dict(type='int', required=False),
+        port=dict(type='int', required=False),
         post_raw=dict(type='str', required=False),
     )
 
@@ -422,9 +425,10 @@ def run_module():
     enable_ssl = module.params['enable_ssl']
     find_string = module.params['find_string']
     do_not_find = module.params['do_not_find']
+    port = module.params['port']
     post_raw = module.params['post_raw']
 
-    test = StatusCake(module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, paused, node_locations, confirmation, timeout, status_codes, host, custom_header, follow_redirect, enable_ssl, find_string, do_not_find, post_raw)
+    test = StatusCake(module, username, api_key, name, url, state, test_tags, check_rate, test_type, contact_group, paused, node_locations, confirmation, timeout, status_codes, host, custom_header, follow_redirect, enable_ssl, find_string, do_not_find, port, post_raw)
 
     if state == "absent":
         test.delete_test()
